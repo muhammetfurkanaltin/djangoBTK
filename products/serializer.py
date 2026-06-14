@@ -3,15 +3,18 @@ from .models import Product
 from rest_framework.validators import UniqueValidator
 from categories.models import Category
 import re
+from comments.serializers import CommentSerializer
 
-class ProductSerializer(serializers.Serializer) : 
-    id = serializers.IntegerField(read_only=True)
-    description = serializers.CharField(required = False, allow_blank= True, allow_null= True)
+class ProductSerializer(serializers.ModelSerializer) : 
+    comments = CommentSerializer(many = True, read_only = True)
     name = serializers.CharField(max_length =200,validators = [UniqueValidator(queryset=Category.objects.all())])
-    price = serializers.DecimalField(max_digits=10,decimal_places=2)
-    stock = serializers.IntegerField()
     slug = serializers.SlugField(validators = [UniqueValidator(queryset=Product.objects.all())])
-    category = serializers.PrimaryKeyRelatedField(queryset = Category.objects.all())
+
+    class Meta:
+        model = Product
+        # fields = '__all__' # bu sekilde kullanıldıgı vakit "comments" gelmiyor  
+        fields = ['id','name','description','price','stock','slug','category','comments']
+        
 
     def validate_price(self, value):
         if value < 0 : 
@@ -30,14 +33,3 @@ class ProductSerializer(serializers.Serializer) :
         if not re.match('^[a-z0-9]+(?:-[a-z0-9]+)*$', value):
             raise serializers.ValidationError('Slug must be lowercase and can only contain hyphens and alphanumeric characters.')
         return value
-        
-    def create(self, validated_data):
-        return Product.objects.create(**validated_data)
-    
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get('description', instance.description)
-        instance.price = validated_data.get('price', instance.price)
-        instance.stock = validated_data.get('stock', instance.stock)
-        instance.save()
-        return instance

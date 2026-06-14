@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'categories',
     'products',
     'rest_framework',
+    'comments'
 ]
 
 MIDDLEWARE = [
