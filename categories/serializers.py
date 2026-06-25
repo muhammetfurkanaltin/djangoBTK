@@ -1,6 +1,17 @@
 from rest_framework import serializers
 from .models import Category    
 from rest_framework.validators import UniqueValidator
+
+class CategoryListSerializer(serializers.ModelSerializer) : 
+    class Meta:
+        model = Category
+        fields = ['id','name',]
+
+class CategoryDetailsSerializer(serializers.ModelSerializer) : 
+    class Meta:
+        model = Category
+        fields = ['id','name','description']
+
 class CategorySerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length = 100,validators = [UniqueValidator(queryset=Category.objects.all())])

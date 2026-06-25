@@ -4,10 +4,10 @@ from rest_framework.validators import UniqueValidator
 from categories.models import Category
 import re
 from comments.serializers import CommentSerializer
-from categories.serializers import CategorySerializer
+from categories.serializers import CategorySerializer, CategoryListSerializer
 
 class ProductListSerializer(serializers.ModelSerializer) : 
-    category = CategorySerializer()
+    category = CategoryListSerializer()
     class Meta:
         model = Product
         fields = ['id','name','price','stock','slug','category']
@@ -47,7 +47,7 @@ class ProductSerializer(serializers.ModelSerializer) :
         return value
     
     def validate_slug (self, value):
-        if self.instace is None :
+        if self.instance is None :
             if Product.objects.filter(slug = value).exists():
                 raise serializers.ValidationError('Slug must be unique.')
         else :
