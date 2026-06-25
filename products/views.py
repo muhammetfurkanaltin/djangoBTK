@@ -13,7 +13,7 @@ def catalog_list_products(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def catalog_list_products(request, pk):
+def catalog_list_products_by_catid(request, pk):
     'catalog: List all Products by id'
     products = Product.objects.filter(category = pk)
     serializer = ProductListSerializer(products, many=True)
