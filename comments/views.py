@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Comment
 from .serializers import CommentSerializer 
-from rest_framework import generics
+from rest_framework import generics  # pyright: ignore[reportMissingImports]
 
 class CommentListView(generics.ListAPIView):
     serializer_class = CommentSerializer
